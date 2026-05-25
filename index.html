@@ -7,56 +7,77 @@
     <meta name="description" content="Native desktop app to download Unsplash photos in bulk. Search, resize, convert — no browser needed.">
     <meta property="og:title" content="PullSplash">
     <meta property="og:description" content="Pull photos from Unsplash — native desktop downloader">
+    <meta property="og:image" content="https://vidokun.github.io/PullSplash/pullsplash.webp">
     <meta property="og:type" content="website">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = { theme: { extend: { colors: { accent: '#e44232' } } } }
     </script>
     <style>
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-up { animation: fadeUp 0.6s ease-out both; }
-        .fade-up:nth-child(2) { animation-delay: 0.1s; }
-        .fade-up:nth-child(3) { animation-delay: 0.2s; }
-        .fade-up:nth-child(4) { animation-delay: 0.3s; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes glowPulse { 0%, 100% { opacity: 0.4; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.05); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes bgShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .fade-up { animation: fadeUp 0.7s ease-out both; }
+        .fade-up:nth-child(2) { animation-delay: 0.12s; }
+        .fade-up:nth-child(3) { animation-delay: 0.24s; }
+        .fade-up:nth-child(4) { animation-delay: 0.36s; }
+        .fade-up:nth-child(5) { animation-delay: 0.48s; }
+        .glow-orb { animation: glowPulse 4s ease-in-out infinite; }
+        .glow-orb:nth-child(2) { animation-delay: 1.5s; }
+        .glow-orb:nth-child(3) { animation-delay: 3s; }
+        .float-card { animation: float 4s ease-in-out infinite; }
+        .float-card:nth-child(2) { animation-delay: 1.3s; }
+        .float-card:nth-child(3) { animation-delay: 2.6s; }
         .pulse-dot { animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .animated-bg { background: linear-gradient(135deg, #0a0a0a 0%, #1a1115 25%, #111118 50%, #15111a 75%, #0a0a0a 100%); background-size: 400% 400%; animation: bgShift 15s ease infinite; }
+        .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.06); }
+        .glass-hover:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); }
+        .screenshot-glow { box-shadow: 0 0 80px rgba(228,66,50,0.15), 0 0 40px rgba(228,66,50,0.08); }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgb(63 63 70); border-radius: 3px; }
     </style>
 </head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen font-sans antialiased">
+<body class="animated-bg text-zinc-100 min-h-screen font-sans antialiased relative overflow-x-hidden">
 
-<main class="max-w-4xl mx-auto px-6 py-16 md:py-24">
+<div class="fixed inset-0 pointer-events-none overflow-hidden">
+    <div class="glow-orb absolute -top-40 -right-40 w-96 h-96 rounded-full bg-accent/10 blur-3xl"></div>
+    <div class="glow-orb absolute top-1/2 -left-40 w-80 h-80 rounded-full bg-red-500/5 blur-3xl"></div>
+    <div class="glow-orb absolute -bottom-40 right-1/3 w-72 h-72 rounded-full bg-accent/8 blur-3xl"></div>
+</div>
 
-    <section class="text-center fade-up mb-16">
-        <div class="inline-block mb-6">
+<main class="relative max-w-5xl mx-auto px-6 py-16 md:py-28">
+
+    <section class="text-center fade-up mb-12">
+        <div class="inline-block mb-6 float-card">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-20 h-20 md:w-24 md:h-24">
                 <path d="M24 4c-2 12-20 16-20 28 0 8 9 12 20 12s20-4 20-12c0-12-18-16-20-28z" fill="#e44232"/>
                 <path d="M24 18v14M18 26l6 6 6-6" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
         </div>
-        <h1 class="text-5xl md:text-6xl font-bold tracking-tight mb-3">
+        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-4">
             <span class="text-accent">Pull</span>Splash
         </h1>
-        <p class="text-zinc-400 text-lg md:text-xl max-w-lg mx-auto mb-4">
-            Pull photos from Unsplash — native desktop downloader
+        <p class="text-zinc-400 text-lg md:text-xl max-w-xl mx-auto mb-5 leading-relaxed">
+            Pull stunning photos from Unsplash.<br>Bulk download, resize, convert — all in a native desktop app.
         </p>
-        <div id="version-badge" class="inline-flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-full px-4 py-1.5 text-sm text-zinc-400">
+        <div id="version-badge" class="inline-flex items-center gap-2 glass rounded-full px-4 py-1.5 text-sm text-zinc-400">
             <span class="inline-block w-2 h-2 rounded-full bg-zinc-600 pulse-dot"></span>
             <span id="version-text">Loading…</span>
         </div>
     </section>
 
-    <section class="fade-up mb-20">
+    <section class="fade-up mb-16">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto">
             <a id="mac-download" href="#" target="_blank" rel="noopener"
-               class="group flex items-center gap-4 bg-zinc-900 border border-zinc-800 hover:border-accent rounded-xl p-5 transition-all duration-200">
+               class="group flex items-center gap-4 glass glass-hover rounded-xl p-5 transition-all duration-300">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 28 28" class="text-zinc-300 group-hover:text-white transition-colors">
                     <path d="M23.077 20.556c-.391.914-.853 1.757-1.39 2.534-.73 1.058-1.328 1.79-1.79 2.201-.715.672-1.48 1.016-2.301 1.034-.588.014-1.299-.171-2.13-.558-.832-.388-1.596-.58-2.294-.58-.732 0-1.514.192-2.347.58-.833.387-1.511.587-2.036.602-.788.03-1.568-.324-2.341-1.063-.504-.441-1.132-1.203-1.886-2.288-.807-1.175-1.472-2.54-1.993-4.097-.557-1.665-.838-3.278-.838-4.843 0-1.788.383-3.331 1.15-4.624.605-1.028 1.408-1.837 2.413-2.433.648-.392 1.352-.593 2.118-.61.831-.016 1.612.256 2.348.82.27.206.614.482 1.032.826.247.204.521.304.826.304.247 0 .54-.112.872-.333.523-.349 1.029-.596 1.524-.748.482-.148.985-.182 1.514-.095 1.316.108 2.318.636 2.994 1.591-1.175.723-1.756 1.738-1.746 3.037.008.833.257 1.527.741 2.079.487.55 1.039.93 1.669 1.119z" fill="currentColor"/>
                 </svg>
                 <div class="flex-1 min-w-0">
-                    <div class="text-sm font-medium text-zinc-200 group-hover:text-white transition-colors">macOS</div>
+                    <div class="text-sm font-semibold text-zinc-200 group-hover:text-white">macOS</div>
                     <div class="text-xs text-zinc-500">PullSplash.zip · <span id="mac-size">—</span></div>
                 </div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 16 16" class="text-zinc-600 group-hover:text-accent transition-colors shrink-0">
@@ -64,12 +85,12 @@
                 </svg>
             </a>
             <a id="win-download" href="#" target="_blank" rel="noopener"
-               class="group flex items-center gap-4 bg-zinc-900 border border-zinc-800 hover:border-accent rounded-xl p-5 transition-all duration-200">
+               class="group flex items-center gap-4 glass glass-hover rounded-xl p-5 transition-all duration-300">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 28 28" class="text-zinc-300 group-hover:text-white transition-colors">
                     <path d="M3 5.11l9.123-1.263v8.82H3V5.11zm0 17.78l9.123 1.263v-8.82H3v7.557zM13.123 3.593L25 2v10.667h-11.877V3.593zM13.123 24.407V13.333H25V26l-11.877-1.593z" fill="currentColor"/>
                 </svg>
                 <div class="flex-1 min-w-0">
-                    <div class="text-sm font-medium text-zinc-200 group-hover:text-white transition-colors">Windows</div>
+                    <div class="text-sm font-semibold text-zinc-200 group-hover:text-white">Windows</div>
                     <div class="text-xs text-zinc-500">PullSplash.exe · <span id="win-size">—</span></div>
                 </div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 16 16" class="text-zinc-600 group-hover:text-accent transition-colors shrink-0">
@@ -77,56 +98,101 @@
                 </svg>
             </a>
         </div>
-        <p class="text-center mt-5">
+        <p class="text-center mt-4">
             <a href="https://github.com/vidokun/PullSplash/releases" target="_blank" rel="noopener"
-               class="text-xs text-zinc-600 hover:text-zinc-400 transition-colors">
-                All releases →
-            </a>
+               class="text-xs text-zinc-600 hover:text-zinc-400 transition-colors">All releases →</a>
         </p>
     </section>
 
     <section class="fade-up mb-20">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
-                <div class="text-accent text-2xl mb-3">↓</div>
-                <h3 class="text-sm font-semibold text-zinc-200 mb-2">Bulk Download</h3>
-                <p class="text-xs text-zinc-500 leading-relaxed">Search by keyword or collection URL. Select multiple photos and download them all at once.</p>
+        <div class="glass rounded-2xl p-2 md:p-3">
+            <img src="pullsplash.webp" alt="PullSplash app screenshot" class="w-full rounded-xl screenshot-glow" loading="lazy">
+        </div>
+        <p class="text-center text-xs text-zinc-600 mt-3">PullSplash running on macOS — search, select, download in one window</p>
+    </section>
+
+    <section class="fade-up mb-20">
+        <h2 class="text-xl font-bold text-center text-zinc-200 mb-10">Everything you need</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass glass-hover rounded-2xl p-6 transition-all duration-300">
+                <div class="flex gap-4">
+                    <div class="text-accent text-2xl shrink-0 mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 28 28"><path d="M8 14l4 4 8-8M6 6h16a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-zinc-200 mb-2">Bulk Download</h3>
+                        <p class="text-xs text-zinc-400 leading-relaxed">Search by keyword or paste a collection URL. Select multiple photos at once — no limits on selection. Choose between folder download or direct browser download with a single click.</p>
+                    </div>
+                </div>
             </div>
-            <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
-                <div class="text-accent text-2xl mb-3">⚙</div>
-                <h3 class="text-sm font-semibold text-zinc-200 mb-2">Image Processing</h3>
-                <p class="text-xs text-zinc-500 leading-relaxed">Resize, convert to JPG/PNG/WebP, adjust quality. Process photos before saving.</p>
+            <div class="glass glass-hover rounded-2xl p-6 transition-all duration-300">
+                <div class="flex gap-4">
+                    <div class="text-accent text-2xl shrink-0 mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 28 28"><path d="M4 16l2.586-2.586a2 2 0 012.828 0L12 16m-2-2l1.586-1.586a2 2 0 012.828 0L18 16m-6-6h.01M4 6h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-zinc-200 mb-2">Image Processing</h3>
+                        <p class="text-xs text-zinc-400 leading-relaxed">Convert to JPG, PNG, or WebP. Resize with automatic aspect ratio — set width or height and the other dimension scales proportionally. Adjust quality from 1–100%. All processing happens locally, no uploads.</p>
+                    </div>
+                </div>
             </div>
-            <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
-                <div class="text-accent text-2xl mb-3">⌘</div>
-                <h3 class="text-sm font-semibold text-zinc-200 mb-2">Native App</h3>
-                <p class="text-xs text-zinc-500 leading-relaxed">No browser needed. Runs as a native desktop window on macOS and Windows. Lightweight — 14 MB.</p>
+            <div class="glass glass-hover rounded-2xl p-6 transition-all duration-300">
+                <div class="flex gap-4">
+                    <div class="text-accent text-2xl shrink-0 mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 28 28"><rect x="2" y="3" width="24" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 25h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 21v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-zinc-200 mb-2">Native Desktop App</h3>
+                        <p class="text-xs text-zinc-400 leading-relaxed">Built with pywebview — runs as a real macOS or Windows application. No browser, no terminal, no Electron bloat. Just 14 MB download. Dark-themed sidebar with all controls in one place.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="glass glass-hover rounded-2xl p-6 transition-all duration-300">
+                <div class="flex gap-4">
+                    <div class="text-accent text-2xl shrink-0 mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 28 28"><path d="M14 2v6m0 0l-3-3m3 3l3-3M6 10h16a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V12a2 2 0 012-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-zinc-200 mb-2">Always Up to Date</h3>
+                        <p class="text-xs text-zinc-400 leading-relaxed">Built-in update checker notifies you when a new version is available. Downloads go straight to your Downloads folder — organized, named, and credited. No configuration files to mess with.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <section class="fade-up mb-20">
-        <h2 class="text-lg font-semibold text-center text-zinc-300 mb-8">How it works</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
-            <div class="text-center">
-                <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-accent text-white font-bold text-sm mb-3">1</div>
-                <p class="text-xs text-zinc-400">Get a free API key from <a href="https://unsplash.com/developers" target="_blank" rel="noopener" class="text-accent underline">Unsplash Developers</a></p>
+        <h2 class="text-xl font-bold text-center text-zinc-200 mb-10">Get started in 3 steps</h2>
+        <div class="flex flex-col md:flex-row gap-6 justify-center max-w-3xl mx-auto">
+            <div class="glass rounded-2xl p-6 flex-1 text-center">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-accent text-white font-bold text-lg mb-4">1</div>
+                <h3 class="text-sm font-semibold text-zinc-200 mb-2">Get an API Key</h3>
+                <p class="text-xs text-zinc-400 leading-relaxed">Create a free Unsplash Developer account at <a href="https://unsplash.com/developers" target="_blank" rel="noopener" class="text-accent underline">unsplash.com/developers</a>. Copy your Access Key — it takes 30 seconds.</p>
             </div>
-            <div class="text-center">
-                <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-accent text-white font-bold text-sm mb-3">2</div>
-                <p class="text-xs text-zinc-400">Search by keyword or paste a collection URL</p>
+            <div class="flex items-center justify-center text-zinc-700 shrink-0 md:pt-8">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
-            <div class="text-center">
-                <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-accent text-white font-bold text-sm mb-3">3</div>
-                <p class="text-xs text-zinc-400">Select photos, pick format & size, hit Download</p>
+            <div class="glass rounded-2xl p-6 flex-1 text-center">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-accent text-white font-bold text-lg mb-4">2</div>
+                <h3 class="text-sm font-semibold text-zinc-200 mb-2">Search & Select</h3>
+                <p class="text-xs text-zinc-400 leading-relaxed">Type a keyword like "mountain" or paste a collection URL. Browse results, click to select photos, or hit Select All to grab everything at once.</p>
+            </div>
+            <div class="flex items-center justify-center text-zinc-700 shrink-0 md:pt-8">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="glass rounded-2xl p-6 flex-1 text-center">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-accent text-white font-bold text-lg mb-4">3</div>
+                <h3 class="text-sm font-semibold text-zinc-200 mb-2">Download</h3>
+                <p class="text-xs text-zinc-400 leading-relaxed">Pick your format and size in the sidebar, click Download. Files go to Downloads/PullSplash on your machine — named, credited, ready to use.</p>
             </div>
         </div>
     </section>
 
-    <section class="fade-up border-t border-zinc-900 pt-8 text-center">
+    <section class="fade-up border-t border-white/5 pt-10 text-center">
         <p class="text-xs text-zinc-600">
             Built by <a href="https://github.com/vidokun" target="_blank" rel="noopener" class="text-zinc-500 hover:text-zinc-300 transition-colors">@vidokun</a>
             · Open source on <a href="https://github.com/vidokun/PullSplash" target="_blank" rel="noopener" class="text-zinc-500 hover:text-zinc-300 transition-colors">GitHub</a>
+            · MIT License
         </p>
         <p class="text-xs text-zinc-700 mt-2">
             Credits: <a href="https://github.com/MehediH/Bulksplash" target="_blank" rel="noopener" class="hover:text-zinc-500 transition-colors">Bulksplash</a>
@@ -147,7 +213,7 @@ async function loadRelease() {
     const versionEl = document.getElementById('version-text');
     const dotEl = document.querySelector('.pulse-dot');
     const CACHE_KEY = 'ps-release';
-    const TTL = 300000; // 5 min
+    const TTL = 300000;
 
     try {
         const cached = localStorage.getItem(CACHE_KEY);
@@ -155,13 +221,11 @@ async function loadRelease() {
             const { version, assets, ts } = JSON.parse(cached);
             if (Date.now() - ts < TTL) { populate(version, assets); return; }
         }
-
         const res = await fetch('https://api.github.com/repos/vidokun/PullSplash/releases/latest');
         if (!res.ok) throw new Error('API error');
         const data = await res.json();
         const version = data.tag_name || 'v1.0.0';
         const assets = data.assets || [];
-
         localStorage.setItem(CACHE_KEY, JSON.stringify({ version, assets, ts: Date.now() }));
         populate(version, assets);
     } catch {
@@ -176,15 +240,12 @@ async function loadRelease() {
 }
 
 function populate(version, assets) {
-    const versionEl = document.getElementById('version-text');
+    document.getElementById('version-text').textContent = version;
     const dotEl = document.querySelector('.pulse-dot');
-    versionEl.textContent = version;
     dotEl.classList.remove('pulse-dot');
     dotEl.classList.add('bg-green-500');
-
     const macAsset = assets.find(a => a.name.endsWith('.zip'));
     const winAsset = assets.find(a => a.name.endsWith('.exe'));
-
     if (macAsset) {
         document.getElementById('mac-download').href = macAsset.browser_download_url;
         document.getElementById('mac-size').textContent = formatBytes(macAsset.size);
