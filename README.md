@@ -79,6 +79,10 @@ python -m PyInstaller packaging/pullsplash.spec
 
 Built by [Vidokun](https://github.com/vidokun). Powered by the [Unsplash API](https://unsplash.com/developers).
 
+**Thanks to:**
+- [MehediH/Bulksplash](https://github.com/MehediH/Bulksplash) — the original Node.js CLI that inspired this project and served as the architectural reference
+- [r0x0r/pywebview](https://github.com/r0x0r/pywebview) — native webview wrapper that makes the desktop app possible
+
 ---
 
 <p align="center">
