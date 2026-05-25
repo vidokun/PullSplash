@@ -30,3 +30,6 @@ USER_DIR.mkdir(parents=True, exist_ok=True)
 
 HOST = os.getenv("HOST", "0.0.0.0")
 PORT = int(os.getenv("PORT", "8000"))
+
+VERSION = "1.0.0"
+GITHUB_REPO = "vidokun/PullSplash"

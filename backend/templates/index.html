@@ -38,6 +38,14 @@
 </head>
 <body class="bg-zinc-950 text-zinc-100 min-h-screen font-sans">
 
+<div id="update-banner" class="hidden fixed top-0 inset-x-0 z-50 bg-accent/10 border-b border-accent/30 px-4 py-2.5 flex items-center justify-center gap-3 text-sm backdrop-blur-sm">
+    <span id="update-banner-msg" class="text-accent"></span>
+    <a id="update-banner-link" href="#" target="_blank"
+       class="bg-accent hover:bg-red-700 text-white text-xs font-medium px-3 py-1 rounded transition-colors">Download</a>
+    <button onclick="document.getElementById('update-banner').classList.add('hidden')"
+            class="text-zinc-500 hover:text-zinc-200 text-lg leading-none ml-2">×</button>
+</div>
+
 <div id="splash-screen" class="fixed inset-0 z-[100] bg-zinc-950 flex flex-col items-center justify-center">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-20 h-20">
         <path d="M24 4c-2 12-20 16-20 28 0 8 9 12 20 12s20-4 20-12c0-12-18-16-20-28z" fill="#e44232"/>
@@ -265,10 +273,26 @@ async function init() {
         if (splash) { splash.classList.add('hide'); setTimeout(() => splash.remove(), 500); }
     }, 2500);
 
+    checkForUpdates();
+
     try {
         const res = await fetch(`${API}/api/auth/status`);
         if ((await res.json()).configured) showSearchUI();
     } catch (e) { showError('Cannot connect to backend.'); }
+}
+
+async function checkForUpdates() {
+    try {
+        const res = await fetch(`${API}/api/update/check`);
+        const data = await res.json();
+        if (data.update_available) {
+            const banner = document.getElementById('update-banner');
+            document.getElementById('update-banner-msg').textContent =
+                `v${data.current_version} → v${data.latest_version} available`;
+            document.getElementById('update-banner-link').href = data.download_url;
+            banner.classList.remove('hidden');
+        }
+    } catch (e) { /* silently ignore — update check is non-critical */ }
 }
 
 function showSearchUI() {
